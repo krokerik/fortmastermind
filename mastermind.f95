@@ -6,6 +6,21 @@ end subroutine print_colour
 
 program MASTERMIND
 	implicit none
+	INTEGER, PARAMETER           :: num_pegs = 4
+	INTEGER                      :: i, time
+	INTEGER, DIMENSION(num_pegs) :: code
+	REAL                         :: r(num_pegs)
+	INTEGER, ALLOCATABLE         :: seed(:)
+	
+	call RANDOM_SEED()
+	call RANDOM_SEED(size = i)
+	allocate(seed(i))
+	call RANDOM_SEED(get = seed)
+	call SYSTEM_CLOCK(count = time)
+	seed = time
+	call RANDOM_SEED(put = seed)
+	call RANDOM_NUMBER(r)
+	
 	print*,'testing colours'
 	print*,achar(27)//'[1;31mRED'
 	print*,achar(27)//'[1;32mGREEN'
@@ -15,11 +30,12 @@ program MASTERMIND
 	print*,achar(27)//'[1;36mCYAN'
 	print*,achar(27)//'[0m' !reset the colours
 	print*,'input is now normal'
-	call print_colour(31)
-	call print_colour(32)
-	call print_colour(33)
-	call print_colour(34)
-	call print_colour(35)
-	call print_colour(36)
+	
+	do i=1,num_pegs
+		code(i) = NINT(r(i)*5)+31
+		call print_colour(code(i))
+	end do
+	
 	print*,'' !empty newline
+	deallocate(seed)
 end program MASTERMIND
